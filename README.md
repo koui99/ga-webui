@@ -1,134 +1,136 @@
 # GA WebUI + WebAPI Adapter
 
-一个给 GenericAgent 使用的前端发布仓库，包含：
-- frontend：Next.js Web UI
-- webapi：Python / FastAPI 适配层
-- deploy：systemd 与 Caddy 示例配置
-- scripts：安装与自检脚本
+A clean open-source frontend package for GenericAgent deployments.
 
-这个仓库不是 GenericAgent 本体，也不会替代 GenericAgent。
-它的定位是：作为一个可单独开源、可单独维护的前端项目，外挂到你自己准备好的 GenericAgent 后端上使用。
+This repository contains:
+- frontend: Next.js Web UI
+- webapi: Python / FastAPI adapter layer
+- deploy: systemd and Caddy examples
+- scripts: install and doctor helpers
 
-不包含：
-- GenericAgent 后端核心源码
-- 运行时缓存、构建产物、虚拟环境、日志
-- 真实密钥、真实域名、真实服务器路径
+This repository is not GenericAgent itself. It is meant to be deployed alongside a separate GenericAgent checkout.
 
-## 目录
+## What this project is for
 
-- `frontend/`：前端源码
-- `webapi/`：HTTP 适配层源码
-- `deploy/`：部署示例
-- `scripts/`：安装与检查脚本
+Use this repository if you want to:
+- publish a standalone Web UI project for GenericAgent
+- keep frontend / webapi deployment files separate from the upstream backend
+- make deployment easier for other users with templates and helper scripts
 
-## 与 GenericAgent 的关系
+This repository does not include:
+- GenericAgent core source code
+- virtual environments, build output, caches, or logs
+- real secrets, real domains, or machine-specific paths
 
-这个仓库依赖你单独准备一个 GenericAgent 工作目录。
+## Project layout
 
-推荐部署关系：
-- GenericAgent：单独放在一个目录
-- 本仓库：单独放在另一个目录
-- 本仓库中的 `webapi/` 通过 `GA_REPO_ROOT` 指向 GenericAgent 根目录
-- 本仓库中的 `frontend/` 通过 `GENERIC_AGENT_API_URL` 指向 webapi 服务
+- `frontend/` — Next.js frontend
+- `webapi/` — FastAPI adapter that bridges to GenericAgent
+- `deploy/` — example deployment files
+- `scripts/` — helper scripts for install and checks
 
-适配层当前通过以下方式连接 GenericAgent：
-- 查找 `agentmain.py`
-- 调用 `GeneraticAgent`
-- 使用 `mykey.py` / `mykey.json` 管理自定义模型配置
+## How it works
 
-## 推荐目录结构
+Recommended layout:
 
 `/opt/GenericAgent`
-- 上游 GenericAgent 仓库
+- upstream GenericAgent checkout
 
 `/opt/ga-webui`
-- 本仓库
-- `frontend/`
-- `webapi/`
-- `deploy/`
-- `scripts/`
+- this repository
 
-## 前置条件
+Connection flow:
+- `webapi/` uses `GA_REPO_ROOT` to locate your GenericAgent directory
+- `frontend/` uses `GENERIC_AGENT_API_URL` to talk to the WebAPI service
+- browser → frontend → webapi → GenericAgent
 
-你需要自己准备：
-- 一个可用的 GenericAgent 目录
+## Requirements
+
+You need to prepare:
+- a working GenericAgent directory
 - Python 3
 - Node.js
 - pnpm
 
-同时确保 GenericAgent 本身已经具备它自己的运行前提。
+Also make sure GenericAgent itself is already installed and configured.
 
-## 快速开始
+## Quick start
 
-### 1. 准备 GenericAgent
+### 1) Prepare GenericAgent
 
-先单独获取并配置 GenericAgent，例如：
+Example path:
 
 `/opt/GenericAgent`
 
-并确认下面这个文件存在：
-- `/opt/GenericAgent/agentmain.py`
+Make sure this file exists:
 
-### 2. 启动 webapi 适配层
+`/opt/GenericAgent/agentmain.py`
 
-在本仓库根目录执行：
+### 2) Install WebAPI adapter
 
-`cp .env.webapi.example .env.webapi`
-
-按需修改里面的 `GA_REPO_ROOT` 等变量，然后执行：
+From this repository root:
 
 `bash scripts/install-webapi.sh`
 
-启动方式示例：
+This will:
+- create `.env.webapi` from `.env.webapi.example` if missing
+- create `.venv/`
+- install `webapi/requirements.txt`
+
+Then edit `.env.webapi` and set at least:
+
+`GA_REPO_ROOT=/opt/GenericAgent`
+
+Start WebAPI:
 
 `set -a && . ./.env.webapi && set +a`
 `./.venv/bin/python -m webapi.server`
 
-默认监听：
+Default bind:
 - `127.0.0.1:8765`
 
-### 3. 启动前端
+### 3) Install frontend
 
-在本仓库根目录执行：
+From this repository root:
 
 `bash scripts/install-frontend.sh`
 
-默认会：
-- 为 `frontend/.env.local` 生成示例配置
-- 安装依赖
-- 构建前端
+This will:
+- create `frontend/.env.local` from `frontend/.env.example` if missing
+- install frontend dependencies
+- run a production build check
 
-开发启动：
+Development:
 
 `cd frontend && pnpm dev`
 
-生产启动：
+Production:
 
 `cd frontend && pnpm start`
 
-## 环境变量
+## Configuration
 
-### frontend
+### Frontend
 
-见：
+See:
 - `frontend/.env.example`
 
-最关键的是：
+Main setting:
 - `GENERIC_AGENT_API_URL=http://127.0.0.1:8765`
 
-### webapi
+### WebAPI
 
-见：
+See:
 - `.env.webapi.example`
 
-常用变量：
+Main settings:
 - `GA_REPO_ROOT=/opt/GenericAgent`
 - `GA_HOST=127.0.0.1`
 - `GA_PORT=8765`
 - `GA_IMAGE_PROVIDER=mock`
 - `GA_VISION_PROVIDER=glm`
 
-按需可选：
+Optional provider variables:
 - `OPENAI_API_KEY`
 - `AI_GATEWAY_API_KEY`
 - `FAL_KEY`
@@ -139,72 +141,79 @@
 - `GLM_BASE_URL`
 - `GLM_MODEL`
 
-## 自检
+## Helper scripts
 
-本仓库提供：
+### `scripts/install-webapi.sh`
+Creates `.env.webapi`, creates `.venv`, and installs Python dependencies.
+
+### `scripts/install-frontend.sh`
+Creates `frontend/.env.local`, installs frontend dependencies, and runs a build.
+
+### `scripts/doctor.sh`
+Checks:
+- Python / Node / pnpm availability
+- `frontend/.env.local`
+- root `.venv`
+- `GA_REPO_ROOT`
+- `agentmain.py` under `GA_REPO_ROOT`
+- `webapi/requirements.txt`
+
+Run:
 
 `bash scripts/doctor.sh`
 
-会检查：
-- `GA_REPO_ROOT` 是否存在
-- `agentmain.py` 是否存在
-- Python 虚拟环境与 webapi 依赖是否就绪
-- Node / pnpm 是否存在
-- frontend 配置文件是否存在
+## Deploy examples
 
-## deploy 示例
-
-`deploy/` 目录下提供了：
+The `deploy/` directory includes:
 - `ga-backend.service.example`
 - `ga-frontend.service.example`
 - `Caddyfile.example`
 
-这些示例使用的是“外挂 GenericAgent”布局：
-- webapi 从本仓库启动
-- 通过 `GA_REPO_ROOT` 指向单独的 GenericAgent 目录
-- 前端再通过 `GENERIC_AGENT_API_URL` 指向 webapi
+These examples assume an external GenericAgent layout:
+- WebAPI runs from this repository
+- `GA_REPO_ROOT` points to a separate GenericAgent directory
+- frontend talks to WebAPI through `GENERIC_AGENT_API_URL`
 
-## 常见问题
+## Troubleshooting
 
-### 1. Could not locate GenericAgent repo
+### Could not locate GenericAgent repo
 
-说明 `GA_REPO_ROOT` 没有正确指向 GenericAgent 根目录。
+Your `GA_REPO_ROOT` is wrong or incomplete.
 
-请检查：
-- 该目录是否存在
-- 该目录下是否有 `agentmain.py`
+Check:
+- the directory exists
+- `agentmain.py` exists inside it
 
-### 2. frontend 能启动，但没有模型或无法聊天
+### Frontend opens, but models/chat do not work
 
-通常不是前端问题，而是：
-- webapi 没启动
-- `GENERIC_AGENT_API_URL` 填错
-- GenericAgent 本身没有配置好模型
+Usually one of these is wrong:
+- WebAPI is not running
+- `GENERIC_AGENT_API_URL` is incorrect
+- GenericAgent itself is not configured correctly
 
-### 3. 为什么这个仓库不包含 GenericAgent？
+### Why is GenericAgent not bundled here?
 
-因为这个仓库的目标就是：
-- 只开源前端与 webapi 适配层
-- 与上游 GenericAgent 解耦维护
-- 让使用者自己决定用哪份 GenericAgent、怎么更新 GenericAgent
+Because this repository is specifically for:
+- open-sourcing the frontend + WebAPI layer
+- keeping deployment packaging separate from the upstream backend
+- letting users choose how they obtain and update GenericAgent
 
-## 发布前已做的清理
+## Notes for release
 
-已排除：
-- `.git/`
+Before publishing, this repository has already been cleaned to exclude:
+- `.venv/`
 - `frontend/node_modules/`
 - `frontend/.next/`
-- `.venv/`
 - `__pycache__/`
 - `mykey.py`
-- 各类本地 `.env`
-- 真实域名与服务器绝对路径
+- local `.env` files
+- machine-specific runtime artifacts
 
-## 许可
+## License
 
-本目录携带 MIT License。
+MIT
 
-建议你在公开发布时继续明确说明：
-- frontend / webapi / deploy / scripts 为你的发布包
-- GenericAgent 后端核心来自上游 `lsdefine/GenericAgent`
-- 本项目用于配套 GenericAgent 的 Web UI 与 WebAPI 适配层部署
+When publishing publicly, it is a good idea to state clearly that:
+- this repository contains your frontend / webapi / deploy / scripts package
+- GenericAgent backend core comes from upstream `lsdefine/GenericAgent`
+- this project is intended for Web UI + WebAPI deployment alongside GenericAgent
