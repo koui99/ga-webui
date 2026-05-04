@@ -1,0 +1,14 @@
+your-domain.example.com {
+    encode zstd gzip
+
+    request_body {
+        max_size 25MB
+    }
+
+    reverse_proxy 127.0.0.1:3000 {
+        transport http {
+            response_header_timeout 600s
+        }
+    }
+}
+

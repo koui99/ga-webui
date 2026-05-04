@@ -1,0 +1,21 @@
+[Unit]
+Description=GenericAgent Next.js Frontend
+After=network.target ga-backend.service
+
+[Service]
+Type=simple
+User=<deploy-user>
+WorkingDirectory=/opt/ga-webui/frontend
+Environment="NODE_ENV=production"
+Environment="PORT=3000"
+Environment="HOSTNAME=127.0.0.1"
+Environment="GENERIC_AGENT_API_URL=http://127.0.0.1:8765"
+ExecStart=/usr/local/bin/pnpm start
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+

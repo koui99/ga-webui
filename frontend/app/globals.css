@@ -1,0 +1,201 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ────────────────────────────────────────────────────────────────────────────
+   GenericAgent — Anthropic-inspired warm cream palette.
+   3 neutrals (cream, deep cocoa, soft border) + 1 brand (warm tan) + 1 accent (terracotta).
+   ──────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --brand: oklch(0.78 0.075 60);             /* warm tan #D4A27F */
+  --brand-hover: oklch(0.70 0.085 50);       /* deeper tan */
+  --accent-terracotta: oklch(0.62 0.12 40);  /* #CC785C */
+
+  /* Neutrals */
+  --background: oklch(0.975 0.008 80);       /* cream #FAF9F6 */
+  --foreground: oklch(0.18 0.012 40);        /* deep cocoa #1A1714 */
+  --muted: oklch(0.93 0.013 75);             /* warm bg-secondary #EEECE2 */
+  --muted-foreground: oklch(0.45 0.012 40);  /* secondary text #6B6560 */
+  --border: oklch(0.86 0.012 70);            /* warm border #D5CEC5 */
+  --input: oklch(0.86 0.012 70);
+  --ring: oklch(0.78 0.075 60);
+
+  /* Surfaces */
+  --card: oklch(0.97 0.009 78);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.96 0.01 78);
+  --popover-foreground: var(--foreground);
+  --primary: var(--brand);
+  --primary-foreground: oklch(0.99 0.005 80);
+  --secondary: oklch(0.94 0.011 75);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.55 0.16 25);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* Code */
+  --code-bg: oklch(0.94 0.011 75);
+
+  /* Sidebar */
+  --sidebar: oklch(0.945 0.012 80);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: oklch(0.99 0.005 80);
+  --sidebar-accent: oklch(0.92 0.013 75);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--brand);
+
+  /* Charts (warm spectrum) */
+  --chart-1: oklch(0.78 0.075 60);
+  --chart-2: oklch(0.62 0.12 40);
+  --chart-3: oklch(0.55 0.07 200);
+  --chart-4: oklch(0.70 0.10 100);
+  --chart-5: oklch(0.50 0.05 70);
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.18 0.012 40);
+  --foreground: oklch(0.96 0.008 80);
+  --muted: oklch(0.25 0.012 50);
+  --muted-foreground: oklch(0.70 0.012 70);
+  --border: oklch(0.30 0.012 50);
+  --input: oklch(0.30 0.012 50);
+  --card: oklch(0.21 0.012 45);
+  --card-foreground: oklch(0.96 0.008 80);
+  --popover: oklch(0.21 0.012 45);
+  --popover-foreground: oklch(0.96 0.008 80);
+  --primary: var(--brand);
+  --primary-foreground: oklch(0.18 0.012 40);
+  --secondary: oklch(0.25 0.012 50);
+  --secondary-foreground: oklch(0.96 0.008 80);
+  --accent: oklch(0.25 0.012 50);
+  --accent-foreground: oklch(0.96 0.008 80);
+  --code-bg: oklch(0.23 0.012 50);
+  --sidebar: oklch(0.20 0.012 45);
+  --sidebar-foreground: oklch(0.96 0.008 80);
+  --sidebar-accent: oklch(0.26 0.012 50);
+  --sidebar-accent-foreground: oklch(0.96 0.008 80);
+  --sidebar-border: oklch(0.30 0.012 50);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans-app);
+  --font-mono: var(--font-mono-app);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html, body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Markdown + code styling for chat bubbles
+   ──────────────────────────────────────────────────────────────────────────── */
+.prose-chat :where(p) { @apply leading-relaxed my-2; }
+.prose-chat :where(p:first-child) { @apply mt-0; }
+.prose-chat :where(p:last-child) { @apply mb-0; }
+.prose-chat :where(strong) { @apply font-semibold text-foreground; }
+.prose-chat :where(h1,h2,h3,h4) { @apply font-semibold tracking-tight mt-4 mb-2; }
+.prose-chat :where(h1) { @apply text-xl; }
+.prose-chat :where(h2) { @apply text-lg; }
+.prose-chat :where(h3) { @apply text-base; }
+.prose-chat :where(ul) { @apply list-disc pl-5 my-2; }
+.prose-chat :where(ol) { @apply list-decimal pl-5 my-2; }
+.prose-chat :where(li) { @apply my-1; }
+.prose-chat :where(a) { @apply text-[color:var(--accent-terracotta)] underline underline-offset-2 hover:text-[color:var(--brand-hover)]; }
+.prose-chat :where(blockquote) {
+  @apply border-l-2 border-border pl-3 italic text-muted-foreground my-2;
+}
+.prose-chat :where(:not(pre) > code) {
+  @apply rounded bg-[color:var(--code-bg)] border border-border px-[0.35em] py-[0.1em] text-[0.9em] font-mono;
+}
+.prose-chat :where(pre) {
+  @apply rounded-lg bg-[color:var(--code-bg)] border border-border p-3 my-3 overflow-x-auto text-[0.875rem] font-mono;
+}
+.prose-chat :where(pre code) {
+  @apply bg-transparent border-0 p-0 text-foreground;
+}
+.prose-chat :where(table) { @apply w-full border-collapse my-3 text-sm; }
+.prose-chat :where(th, td) { @apply border border-border px-2 py-1 text-left; }
+.prose-chat :where(th) { @apply bg-muted font-semibold; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Streaming caret
+   ──────────────────────────────────────────────────────────────────────────── */
+.streaming-caret::after {
+  content: "▍";
+  display: inline-block;
+  margin-left: 1px;
+  color: var(--brand);
+  animation: caret-blink 1.1s steps(2) infinite;
+}
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Subtle scrollbar that matches the warm theme
+   ──────────────────────────────────────────────────────────────────────────── */
+.warm-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.warm-scroll::-webkit-scrollbar-track { background: transparent; }
+.warm-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+.warm-scroll::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+/* Image bubble hover overlay */
+.img-bubble { position: relative; }
+.img-bubble .img-overlay {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.img-bubble:hover .img-overlay { opacity: 1; }
+
