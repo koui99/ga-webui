@@ -1,19 +1,13 @@
 [Unit]
-Description=GenericAgent Python Adapter (FastAPI)
+Description=GA WebUI WebAPI Adapter for GenericAgent
 After=network.target
 
 [Service]
 Type=simple
 User=<deploy-user>
-WorkingDirectory=/opt/genericagent
-Environment="GA_PORT=8765"
-Environment="GA_REPO_ROOT=/opt/genericagent"
-Environment="GA_IMAGE_PROVIDER=mock"
-# 需要时取消注释：
-# Environment="FAL_KEY=<your-fal-key>"
-# Environment="OPENAI_API_KEY=<your-openai-key>"
-# Environment="AI_GATEWAY_API_KEY=<your-gateway-key>"
-ExecStart=/opt/genericagent/.venv/bin/python -m webapi.server
+WorkingDirectory=/opt/ga-webui
+EnvironmentFile=/opt/ga-webui/.env.webapi
+ExecStart=/opt/ga-webui/.venv/bin/python -m webapi.server
 Restart=on-failure
 RestartSec=3
 StandardOutput=journal

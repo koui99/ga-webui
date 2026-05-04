@@ -1,5 +1,5 @@
 [Unit]
-Description=GenericAgent Next.js Frontend
+Description=GA WebUI Frontend for GenericAgent
 After=network.target ga-backend.service
 
 [Service]
@@ -18,4 +18,3 @@ StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
-
